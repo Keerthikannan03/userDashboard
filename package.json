@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "https://keerthikannan03.github.io/user-dashboard/",
+  "homepage": "https://keerthikannan03.github.io/userDashboard/",
   "scripts": {
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist",
