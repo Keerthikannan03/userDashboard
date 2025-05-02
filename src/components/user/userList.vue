@@ -7,7 +7,7 @@ import callApi from "../utils/storeApi";
 const userDatas = ref([]);
 const editdialog = ref(false);
 const editvalid = ref(false);
-const selectedUser = ref(null);
+const selectedUser = ref({});
 
 // const validRules = [(v) => !!v || "Field is required"];
 // const nameRules = ref([

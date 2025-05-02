@@ -7,7 +7,7 @@ import dayjs from "dayjs";
 const dateAdapter = useDate();
 const props = defineProps({
   modelValue: {
-    type: Date,
+    type: [String],
     default: null,
   },
 });
@@ -29,7 +29,7 @@ watch(selectDate, (newVal) => {
   <VMenu v-model="isMenuOpen" :close-on-content-click="true">
     <template v-slot:activator="{ props }">
       <label v-bind="$attrs">{{ $attrs.label }}</label>
-      <VTextField v-model="selectedDate" v-bind="{ ...$attrs, ...props }" :label="false"></VTextField>
+      <VTextField v-model="selectedDate" v-bind="{ ...$attrs, ...props }" :label="undefined"></VTextField>
     </template>
     <VDatePicker
       v-model="selectDate"

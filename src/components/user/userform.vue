@@ -188,14 +188,10 @@ function deleteUser(userid){
 watch(
   () => props.userData,
   (newUser) => {
-    console.log(newUser, "newValue");
-    if(newUser) {
-      propsDataType.value = newUser?.type;
-    }
-
     if (newUser) {
+      propsDataType.value = newUser?.type;
       Object.assign(formData, newUser);
-      image.value = newUser.image;
+      // image.value = newUser.image;
     }
   },
   { immediate: true }
