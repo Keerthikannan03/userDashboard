@@ -9,7 +9,27 @@ const handleValue = (e) => {
 };
 </script>
 <template>
-  <VTextField v-bind="$attrs" @input="handleValue"></VTextField>
-</template>
-
+  <!-- <div> -->
+  <label v-bind="$attrs">{{ $attrs.label }}</label>
+  <VTextField v-bind="$attrs" :label="false" @input="handleValue" rounded="lg" class="text-field">
+    <!-- <template v-slot:placeholder="props">
+      <span>{{ props }}</span>
+    </template> -->
+  </VTextField>
+  <!-- </div> -->
 <!-- <VTextField v-model="props.modelValue" :label="props.label" :rules="[...props.rules]" :variant="props.variant" :density="props.density" :required="props.required"></VTextField> -->
+</template>
+<style scoped>
+  label{
+    font-size: 12px;
+    font-weight: 500;
+    color: grey;
+  }
+  .text-field ::placeholder{
+    font-size: 14px !important;
+  }
+  :deep(.v-input__details){
+    min-height: 14px !important;
+  }
+</style>
+

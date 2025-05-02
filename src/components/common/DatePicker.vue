@@ -28,7 +28,8 @@ watch(selectDate, (newVal) => {
 <template>
   <VMenu v-model="isMenuOpen" :close-on-content-click="true">
     <template v-slot:activator="{ props }">
-      <VTextField v-model="selectedDate" v-bind="{ ...$attrs, ...props }"></VTextField>
+      <label v-bind="$attrs">{{ $attrs.label }}</label>
+      <VTextField v-model="selectedDate" v-bind="{ ...$attrs, ...props }" :label="false"></VTextField>
     </template>
     <VDatePicker
       v-model="selectDate"
@@ -38,3 +39,13 @@ watch(selectDate, (newVal) => {
     ></VDatePicker>
   </VMenu>
 </template>
+<style scoped>
+  label{
+    font-size: 12px;
+    font-weight: 500;
+    color: grey;
+  }
+  .v-input input::placeholder{
+    font-size: 14px !important;
+  }
+</style>

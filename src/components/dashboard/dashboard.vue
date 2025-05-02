@@ -1,7 +1,9 @@
 <script setup>
-import { ref, watch } from "vue";
+import { onMounted, onUnmounted, ref, computed, watch } from "vue";
+import { useRoute } from 'vue-router';
 import logoImg from "../../assets/logo-1.png";
 
+const route = useRoute();
 const sidebarItems = [
   {
     icon: "mdi-home-city",
@@ -20,7 +22,6 @@ const sidebarItems = [
     title: "Products",
     value: "products",
     to: "/dashboard/products",
-    options: {
       items: [
         {
           title: "Products List",
@@ -38,7 +39,6 @@ const sidebarItems = [
         //   to: "/dashboard/products/editproduct",
         // },
       ],
-    },
   },
   {
     icon: "mdi-account",
@@ -50,6 +50,27 @@ const sidebarItems = [
 
 const drawer = ref(true);
 const rail = ref(false);
+
+const windowWidth = ref(window.innerWidth);
+
+const handleResize = () => {
+  windowWidth.value = window.innerWidth;
+};
+
+const isMobile = computed(() => windowWidth.value < 992);
+
+onMounted(() => {
+  window.addEventListener('resize', handleResize);
+});
+
+onUnmounted(() => {
+  window.removeEventListener('resize', handleResize);
+});
+
+watch(isMobile,(newVal)=>{
+  rail.value = newVal ? true : false;
+},{immediate:true});
+
 </script>
 <template>
   <v-card>
@@ -72,15 +93,17 @@ const rail = ref(false);
         <v-divider class="mt-0"></v-divider>
 
         <v-list density="compact" nav>
-          <div v-for="(item, index) in sidebarItems" :key="index">
+          <template v-for="(item, index) in sidebarItems" :key="index">
             <v-list-item
-              v-if="!item.options && !item.options?.items?.length > 0"
+              v-if="!item.items && !item?.items?.length > 0"
               :prepend-icon="item.icon"
               :title="item.title"
+              :value="item.title"
               :to="item.to"
               link
               exact
               active-class="active-sidebar-item"
+              @click.stop="rail ? (rail = true) : null"
             >
             </v-list-item>
             <v-list-group v-else>
@@ -90,16 +113,19 @@ const rail = ref(false);
                   :active-class="rail ? 'active-sidebar-item' : null"
                   :prepend-icon="item.icon"
                   :title="item.title"
+                  :value="item.title" :active="item.items.some(v=>v.to == route.path)"
+                  @click="rail ? (rail = false) : null"
                 ></v-list-item>
               </template>
 
               <template v-if="!rail">
                 <v-list-item
-                  v-for="(option, i) in item.options.items"
+                  v-for="(option, i) in item.items"
                   :key="i"
                   :prepend-icon="option.icon"
                   :to="option.to"
                   :title="option.title"
+                  :value="option.title"
                   link
                   exact
                   active-class="active-sidebar-item"
@@ -107,7 +133,7 @@ const rail = ref(false);
                 </v-list-item>
               </template>
             </v-list-group>
-          </div>
+          </template>
         </v-list>
       </v-navigation-drawer>
       <v-app-bar class="dashHeader">
@@ -131,7 +157,7 @@ const rail = ref(false);
       <!-- <v-footer name="footer" app>
         <div class="ms-auto pb-2">
           <v-btn color="warning" class="me-2">Clear</v-btn>
-          <v-btn @click="saveproduct()" type="submit" color="success">Save Product</v-btn>
+          <v-btn @click="saveproduct()" type="submit" color="#1976d2">Save Product</v-btn>
         </div>
     </v-footer> -->
     </v-layout>

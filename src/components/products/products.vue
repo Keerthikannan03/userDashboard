@@ -113,7 +113,7 @@ onMounted(() => {
   <div>
     <div class="d-flex justify-content-between align-items-center">
       <h2>Products Lists</h2>
-      <v-btn to="/dashboard/products/addproduct" class="text-none" color="success"
+      <v-btn to="/dashboard/products/addproduct" class="text-none" color="#1976d2"
         >Add Product</v-btn
       >
     </div>

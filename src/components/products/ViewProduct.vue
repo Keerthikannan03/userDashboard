@@ -167,7 +167,7 @@ onMounted(() => {
             <div class="ms-md-auto ms-3 me-2 my-lg-0 my-3" style="width: fit-content">
               <p class="mb-1 text-muted">Availablity</p>
               <div class="d-flex align-items-center ga-2">
-                <v-icon color="success" icon="mdi-circle" size="11"></v-icon>
+                <v-icon color="#1976d2" icon="mdi-circle" size="11"></v-icon>
                 <span class="sub-text">In stock</span>
                 <v-icon color="grey" icon="mdi-circle" size="11"></v-icon>
                 <span class="sub-text">{{ productData.stock }} Sold</span>

@@ -74,7 +74,7 @@ onMounted(() => {
   <div>
     <div class="d-flex justify-content-between align-items-center">
       <h2>User Lists</h2>
-      <v-btn @click="userForm(null)" color="success">Add User</v-btn>
+      <v-btn @click="userForm(null)" color="#1976d2">Add User</v-btn>
     </div>
     <v-table
       v-if="userDatas && userDatas.length > 0"
@@ -113,7 +113,7 @@ onMounted(() => {
   </div>
 
   <div>
-    <v-dialog v-model="editdialog" max-width="600" persistent>
+    <v-dialog v-model="editdialog" width="100%" persistent>
       <div class="mx-auto">
         <userform :userData="selectedUser" @close-dialog="editdialog = false" />
       </div>
