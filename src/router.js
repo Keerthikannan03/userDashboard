@@ -15,7 +15,7 @@ const routes = [
       { 
         path: 'userlist', 
         name: 'userList', 
-        component: ()=> import('./components/user/userList.vue')
+        component: ()=> import('./components/user/UserPage.vue')
       },
       { 
         path: '/dashboard/products', 

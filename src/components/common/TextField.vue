@@ -10,7 +10,7 @@ const handleValue = (e) => {
 </script>
 <template>
   <!-- <div> -->
-  <label v-bind="$attrs">{{ $attrs.label }}</label>
+  <label v-bind="$attrs" v-if="$attrs.label">{{ $attrs.label }}</label>
   <VTextField v-bind="$attrs" :label="undefined" @input="handleValue" variant="outlined" rounded="lg" class="text-field"></VTextField>
   <!-- </div> -->
 <!-- <VTextField v-model="props.modelValue" :label="props.label" :rules="[...props.rules]" :variant="props.variant" :density="props.density" :required="props.required"></VTextField> -->

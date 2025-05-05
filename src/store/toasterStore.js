@@ -17,7 +17,6 @@ const toasterStore = defineStore("toasterStore", {
         new Promise((resolve)=>{
             let method = { post: "Added", delete: "Deleted", put: "Updated" }[res.config.method] || "";
             let sample = { post: "Destroy"}['post'] || "";
-            console.log(sample, "headersheadersheaders");
             if (res?.status === 200 || res?.status === 201 || res?.statusText === "OK") {
               this.toasterAction({
                 toasterStatus: true,
@@ -56,7 +55,7 @@ const toasterStore = defineStore("toasterStore", {
             this.toastIcon = options.icon;
 
                         
-            console.log(this.toasterStatus,this.toasterMsg,this.toasterColor,this.toasterType,this.duration,this.toastIcon,"options-----");
+            // console.log(this.toasterStatus,this.toasterMsg,this.toasterColor,this.toasterType,this.duration,this.toastIcon,"options-----");
             resolve('complate');
         })
     },

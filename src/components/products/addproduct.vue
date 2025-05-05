@@ -447,7 +447,7 @@ function deleteProdImg(index) {
           :loading="loadsubmit"
           :disabled="loadsubmit"
           type="submit"
-          color="success"
+          color="#1976d2"
           >Save Product</v-btn
         >
       </div>

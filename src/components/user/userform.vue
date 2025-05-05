@@ -1,6 +1,5 @@
 <script setup>
-import { ref, reactive, watch } from "vue";
-import { VDateInput } from "vuetify/labs/VDateInput";
+import { ref, reactive, watch, computed } from "vue";
 import accountImg from "../../assets/accountImg.jpeg";
 import callApi from "../utils/storeApi";
 // import toasterCall from "../common/toasters.vue";
@@ -9,7 +8,8 @@ import toasterStore from "../../store/toasterStore.js";
 import TextField from '../../components/common/TextField.vue';
 import RadioGroup from '../../components/common/RadioGroup.vue';
 import DatePicker from "../common/DatePicker.vue";
-import { ZoomImg } from "vue3-zoomer";
+import CardCompo from "../common/CardCompo.vue";
+import ZoomImage from "../common/ZoomImage.vue";
 
 const emit = defineEmits(["close-dialog"]);
 const form = ref();
@@ -41,7 +41,7 @@ const nameRules = ref([
 
 // Testing comment 
 
-const formData = reactive({
+let formData = reactive({
   firstName: '',
   lastName: "",
   email: "",
@@ -166,36 +166,26 @@ const editUser = async(userId, data) =>{
   })
 }
 
-function deleteUser(userid){
-  loading.value = true;
-  let url = `/users/${userid}`;
-
-  callApi(url, {method: "delete"})
-  .then((res)=>{
-    loading.value = false;
-    closeUserform();
-    manageStore(res, 'user');
-  })
-  .catch((err)=>{
-    errorStatus.value = "Something went wrong";
-    loading.value = false;
-    closeUserform();
-    manageStore(err, 'user');
-    // console.log(err,'error');
-  })
-}
-
 watch(
   () => props.userData,
   (newUser) => {
+    console.log(newUser,'newUsernewUser...1');
+    console.log(formData,'newUsernewUser...2')
+
     if (newUser) {
       propsDataType.value = newUser?.type;
       Object.assign(formData, newUser);
-      // image.value = newUser.image;
+    } else {
+      formData = {};
     }
   },
   { immediate: true }
 );
+
+const handleDisabled = computed(() => {
+  return !props.userData ? !valid.value : !valid.value || !isChanged.value;
+});
+
 
 watch(
   () => formData,
@@ -205,7 +195,7 @@ watch(
     }
     if (newValue && props.userData) {
       isChanged.value = Object.keys(props.userData).some(key=> props.userData[key] !== newValue[key]);
-      console.log(isChanged.value, "isChanged");
+      // console.log(isChanged.value, "isChanged");
     }
   },
   { deep: true }
@@ -213,9 +203,10 @@ watch(
 </script>
 
 <template>
-  <v-card max-width="500px" width="auto" class="p-1" rounded="xl">
+  <VDialog v-bind="$attrs">
+  <CardCompo max-width="500px" width="auto">
     <v-form ref="form" v-model="valid" lazy-validation>
-      <div class="position-relative d-flex justify-content-between py-2 px-1 form-title-head" v-if="propsDataType !=='delete'">
+      <div class="position-relative d-flex justify-content-between py-2 px-1 form-title-head">
         <span></span>
         <h4 class="m-0">{{ !props.userData ? "Add" : "Edit" }} User</h4>
             <v-btn
@@ -227,50 +218,17 @@ watch(
             ></v-btn>
       </div>
         <div class="position-relative">
-          <v-list v-if="propsDataType == 'delete'" class="pt-0 form-header">
-            <v-list-item
-                class="px-0"
-                :title="formData.firstName + '' + formData.lastName"
-                :subtitle="formData.email"
-              >
-              <template v-slot:prepend>
-                <v-avatar
-                class="cursor-pointer"
-                size="50"
-                color="primary"
-              >
-                <v-img :src="formData.image || defaultImage" />
-                <v-icon
-                  icon="mdi-camera"
-                  v-if="!formData.image"
-                  color="black"
-                  class="avatar-icon"
-                ></v-icon>
-              </v-avatar>
-              </template>
-            </v-list-item>
-          </v-list>
 
-          <div v-if="propsDataType == 'delete'" class="mt-3">
-            <v-card-text class="py-0">
-              Are you sure you want to delete this user?
-            </v-card-text>
-            <v-card-actions class="justify-content-between">
-              <v-btn @click="closeUserform()" density="compact">Cancel</v-btn>
-              <v-btn @click="deleteUser(props.userData.id)" :loading="loading" density="compact" color="danger">Delete</v-btn>
-            </v-card-actions>
-          </div>
-
-          <div v-if="propsDataType !=='delete'" class="px-2 py-2 ga-5 d-flex justify-content-between align-items-center form-header">
+          <div class="px-2 py-2 ga-5 d-flex justify-content-between align-items-center form-header">
             <span class="col-2"></span>
-            <v-avatar class="col-md-4 cursor-pointer border border-secondary z-3" file-icon size="60" color="primary" @click="imageDialog = true;" >
+            <v-avatar @click="imageDialog = true;" class="col-md-4 cursor-pointer border border-secondary z-3" file-icon size="60" color="primary" >
               <v-img :src="formData.image || defaultImage" />
-              <v-icon
+              <!-- <v-icon
                 icon="mdi-camera"
                 v-if="props?.userData?.image || !formData.image"
                 color="black"
                 class="avatar-icon"
-              ></v-icon>
+              ></v-icon> -->
             </v-avatar>
             <v-file-input
               ref="fileInput"
@@ -290,25 +248,10 @@ watch(
             </div>
           </div>
 
-          <v-dialog v-model="imageDialog" width="auto" persistent>
-            <v-card width="500px" rounded="xl" class="pa-1 mx-auto bg-black">
-              <!-- <v-overlay v-model="imageDialog" class="mx-auto"> -->
-              <v-btn icon="mdi-close" @click="imageDialog = false" density="compact" rounded="pill" class="text-dark ms-auto me-1 mt-1"></v-btn>
-              <div class="pa-4 zoom-image">
-                <ZoomImg :src="formData.image || image || defaultImage" class="h-[30rem]" style="object-fit: contain;">
-                  <template #loading>
-                    <div style="width:400px !important">
-                      <p class="text-center">Loading...</p>
-                    </div>
-                  </template>
-                </ZoomImg>
-                <!-- <v-img :src="formData.image || image || defaultImage" width="200px" class="mx-auto"></v-img> -->
-              </div>
-              <!-- </v-overlay> -->
-            </v-card>
-          </v-dialog>
+          <ZoomImage v-model="imageDialog" :userData="props.userData" @close-dialog="imageDialog = false" rounded="xl" width="auto" persistent></ZoomImage>
 
-      <div class="row px-2 mt-2" v-if="propsDataType !=='delete'">
+
+      <div class="row px-2 mt-2">
 
         <div class="col-md-6">
           <TextField v-model="formData.firstName" :rules="[...validRules, ...nameRules]" required label="First Name" placeholder="John"
@@ -355,7 +298,7 @@ watch(
 
         </div>
 
-        <div class="col-md-12 d-flex mb-3" :class="props.userData ? 'justify-content-end' : 'justify-content-between '">
+        <div class="col-md-12 d-flex ga-2 mb-3" :class="props.userData ? 'justify-content-end' : 'justify-content-between '">
           <v-btn v-if="!props.userData"
             :disabled="!valid"
             color="warning"
@@ -366,17 +309,17 @@ watch(
           >
           <v-btn @click="deleteUser(props.userData.id)" :loading="loading" v-if="propsDataType =='delete'" size="small" variant="outlined" color="danger">Delete User</v-btn>
           <v-btn
-            :disabled="!props.userData ? !valid : (!valid || (valid && !isChanged) || (!valid && !isChanged))"
-            color="#1976d2" :loading="loading && !propsDataType == 'delete'"
+            :disabled="handleDisabled"
+            color="#1976d2" :loading="loading && (propsDataType == 'edit' || propsDataType == 'view')"
             @click="!props.userData ? addUser() : editUser(props.userData.id,formData)"
             size="small"
-            >{{ !props.userData ? 'Add' : 'Save Changes' }}</v-btn
-          >
+            >{{ !props.userData ? 'Add' : 'Save Changes' }}</v-btn>
         </div>
       </div>
         </div>
     </v-form>
-  </v-card>
+  </CardCompo>
+  </VDialog>
 </template>
 
 <style scoped>
@@ -391,7 +334,7 @@ watch(
   color: white;
   border-top-left-radius: 20px;
   border-top-right-radius: 20px;
-}
+} 
 
 .form-header{
   background: #c1c1c12b;

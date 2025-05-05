@@ -128,7 +128,8 @@ watch(isMobile,(newVal)=>{
                   :value="option.title"
                   link
                   exact
-                  active-class="active-sidebar-item"
+                  :active-class="option.to == route.path ? 'active-sidebar-item' : null"
+                  :active="option.to == route.path"
                 >
                 </v-list-item>
               </template>

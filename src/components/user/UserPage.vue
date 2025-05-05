@@ -3,11 +3,17 @@ import { ref, onMounted, reactive, watch } from "vue";
 import nodataImg from "../../assets/nodata.jpg";
 import userform from "./userform.vue";
 import callApi from "../utils/storeApi";
+import DeleteDialog from "../common/DeleteDialog.vue";
+import ViewUser from "./ViewUser.vue";
+import UserList from "./UserList.vue";
 
 const userDatas = ref([]);
 const editdialog = ref(false);
+const deletedialog = ref(false);
+const viewdialog = ref(false);
 const editvalid = ref(false);
 const selectedUser = ref({});
+const selectedView = ref(-1);
 
 // const validRules = [(v) => !!v || "Field is required"];
 // const nameRules = ref([
@@ -37,15 +43,33 @@ const getuserData = async () => {
 // git config --local user.name "Keerthikanan03"
 // git config  --local user.email "keerthikanan03@gmail.com"
 
-function userForm(data, reqtype) {
-  if (reqtype) data.type = reqtype;
-  selectedUser.value = data;
-  editdialog.value = true;
+const userForm = (data,index,reqtype)=> {
+  
+  if (data && reqtype) data.type = reqtype;
+  
+  if (reqtype == 'edit' || reqtype == 'add') {
+    selectedUser.value = reqtype !== 'add' ? data : null;
+    editdialog.value = true;
+  } 
+  else if(reqtype == 'delete') {
+    selectedUser.value = data;
+    deletedialog.value = true;
+  }
+  else{
+    selectedView.value = index;
+    selectedUser.value = data;
+    viewdialog.value = true;
+  }
 }
 
 // function deleteUser(data){
 //   editdialog.value = true;
 // }
+
+const handleClosedForm = ()=>{
+  editdialog.value = false;
+  selectedView.value = -1;
+}
 
 watch(
   () => formData.lastName,
@@ -74,49 +98,17 @@ onMounted(() => {
   <div>
     <div class="d-flex justify-content-between align-items-center">
       <h2>User Lists</h2>
-      <v-btn @click="userForm(null)" color="#1976d2">Add User</v-btn>
+      <v-btn @click="userForm(null,null,'add')" color="#1976d2">Add User</v-btn>
     </div>
-    <v-table
-      v-if="userDatas && userDatas.length > 0"
-      fixed-header
-      style="width: auto"
-      height="90vh">
-      <thead>
-        <tr>
-          <th class="text-left">User ID</th>
-          <th class="text-left">Name</th>
-          <th class="text-left">E-mail</th>
-          <th class="text-left">Phone</th>
-          <th class="text-left">Gender</th>
-          <th class="text-left">Image</th>
-          <th class="text-left">Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="data in userDatas" :key="data.id">
-          <td>{{ data.id }}</td>
-          <td>{{ data.firstName }} {{ data.lastName }}</td>
-          <td>{{ data.email }}</td>
-          <td>{{ data.phone }}</td>
-          <td class="text-capitalize">{{ data.gender }}</td>
-          <td>{{ data.image }}</td>
-          <td class="d-flex align-items-center">
-            <v-icon @click="userForm(data, 'edit')" color="warning" class="me-2"
-              >mdi-pencil</v-icon
-            >
-            <v-icon @click="userForm(data, 'delete')" color="danger">mdi-delete</v-icon>
-          </td>
-        </tr>
-      </tbody>
-    </v-table>
+    <template v-if="userDatas && userDatas.length > 0">
+      <UserList :userDatas="userDatas" @user-Form="userForm" :selectview="selectedView" @select-view="selectedView = -1"></UserList>
+    </template>
     <v-img :src="nodataImg" width="80%" class="m-auto" v-else />
   </div>
 
-  <div>
-    <v-dialog v-model="editdialog" width="100%" persistent>
-      <div class="mx-auto">
-        <userform :userData="selectedUser" @close-dialog="editdialog = false" />
-      </div>
-    </v-dialog>
+  <div> 
+    <userform v-model="editdialog" :userData="selectedUser" @close-dialog="handleClosedForm" width="500px" persistent></userform>
+    <DeleteDialog v-model="deletedialog" width="400px" :userData="selectedUser" :deleteType="'user'" @close-dialog="deletedialog = false" persistent ></DeleteDialog>
+    <ViewUser v-model="viewdialog" :userData="selectedUser" :deleteType="'view'" @close-dialog="viewdialog = false, selectedView = -1" persistent></ViewUser>
   </div>
 </template>
