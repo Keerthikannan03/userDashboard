@@ -14,6 +14,7 @@ const viewdialog = ref(false);
 const editvalid = ref(false);
 const selectedUser = ref({});
 const selectedView = ref(-1);
+const userTableHeading = ref(['User ID','Name','Phone','Gender','Image','Action']);
 
 // const validRules = [(v) => !!v || "Field is required"];
 // const nameRules = ref([
@@ -103,7 +104,21 @@ onMounted(() => {
     <template v-if="userDatas && userDatas.length > 0">
       <UserList :userDatas="userDatas" @user-Form="userForm" :selectview="selectedView" @select-view="selectedView = -1"></UserList>
     </template>
-    <v-img :src="nodataImg" width="80%" class="m-auto" v-else />
+    <v-table v-else fixed-header style="width: auto" height="90vh" >
+      <thead>
+        <tr>
+          <th v-for="heading of userTableHeading" :key="heading" class="text-left">{{ heading }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(data) in 14" :key="data.id">
+          <td v-for="(data) in 6" :key="data.id">
+            <v-skeleton-loader v-if="true" type="list-item" ></v-skeleton-loader>
+          </td>
+        </tr>
+      </tbody>
+      </v-table>
+    <!-- <v-img :src="nodataImg" width="80%" class="m-auto" v-else /> -->
   </div>
 
   <div> 

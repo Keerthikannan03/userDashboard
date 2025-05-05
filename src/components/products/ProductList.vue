@@ -1,6 +1,7 @@
 <script setup>
 import { ref, watch } from "vue";
 import DeleteDialog from "../common/DeleteDialog.vue";
+// import { defineAsyncComponent } from "vue";
 
 const emit = defineEmits(['view-page','delete-item']);
 const props = defineProps({
@@ -21,6 +22,8 @@ const selectedDelete = (index) => {
   deleteDialog.value = true;
 };
 
+// const loadComponent = defineAsyncComponent(()=> import('./products.vue'));
+
 watch(
   () => props.productDatas,
   (newValue) => {
@@ -34,7 +37,7 @@ watch(
 
 <template>
   <div class="row g-3 pb-2 overflow-y-auto" style="height: 80vh">
-    <div v-for="(item, index) in productsData" :key="item.id" class="col-xxl-4 col-xl-6 col-lg-6" >
+    <div v-for="(item, index) in props.productDatas" :key="item.id" class="col-xxl-4 col-xl-6 col-lg-6" >
       <v-card hover class="d-flex card-list d-flex flex-wrap">
         <div class="col-sm-3 col-12">
           <v-img

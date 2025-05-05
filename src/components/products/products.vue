@@ -13,8 +13,6 @@ const router = useRouter();
 const productsData = ref([]);
 const noData = ref(true);
 const search = ref("");
-const selectIndex = ref(-1);
-const deleteDialog = ref(false);
 const tabwindow = ref(null);
 const tablist = ref([
   {
@@ -78,38 +76,13 @@ const viewProduct = (uid, index) => {
     });
 };
 
-const btnLoading = ref([]);
-const deleteProduct = async (uid, index) => {
-  btnLoading.value[index] = true;
-
-  const url = `/products/${uid}`;
-  await callApi(url, { method: "delete" })
-    .then((response) => {
-      console.log(response, "response");
-      // successtoaster.value = true;
-      search.value = "";
-      deleteDialog.value = false;
-      // defaultMsg.value = "Product Deleted Successfully";
-      manageStore(response, "Product");
-      productsList();
-    })
-    .catch((error) => {
-      console.log(error, "error");
-      manageStore(error, "Product");
-    })
-    .finally(() => {
-      btnLoading.value[index] = false;
-    });
-};
-
-// const selectedDelete = (index) => {
-//   selectIndex.value = index;
-//   deleteDialog.value = true;
-// };
+const handleChange = (e)=>{
+  console.log(e.target.value, "newVal");
+  productsList();
+}
 
 watch(search, (newVal) => {
   if (!newVal || (newVal && newVal.length == 0)) {
-    console.log(newVal, "newVal");
     productsList();
   }
 });
@@ -132,6 +105,7 @@ onMounted(() => {
           style="width: 230px"
           variant="solo"
           clearable
+          @click:clear="productsList"
           hide-details
           class="ms-md-4 ms-0 h-100"
         ></TextField>
@@ -159,14 +133,13 @@ onMounted(() => {
         </v-tabs-window>
       </v-card-text>
     </v-card>
-
-    <template v-if="noData">
+    <template v-if="productsData.length !== 0">
       <ProductList
         :productDatas="productsData"
         @view-page="viewProduct"
       ></ProductList>
     </template>
-    <template v-else>
+    <template v-if="productsData.length === 0">
       <v-img :src="nodataImg" width="80%" class="m-auto" />
     </template>
   </div>
