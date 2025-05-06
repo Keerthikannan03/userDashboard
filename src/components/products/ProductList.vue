@@ -50,7 +50,14 @@ watch(
           />
         </div>
         <div class="col-sm-9 col-12 py-2 px-3">
-          <h6 class="mb-1">{{ item.title }}</h6>
+          <h6 class="mb-1">
+          <span>{{ item.title }}</span> 
+              <v-btn color="warning"
+            icon="mdi-cart-plus"
+            size="small"
+            density="comfortable"
+          ></v-btn>
+          </h6>
           <v-card-subtitle class="p-0">{{ item.description }}</v-card-subtitle>
           <v-card-text class="d-flex flex-wrap justify-content-between p-0 pt-2">
             <div>
@@ -64,9 +71,7 @@ watch(
                 <span class="text-muted">Category: </span><span>{{ item.category }}</span>
               </p>
             </div>
-            <div
-              class="d-flex flex-wrap flex-sm-column flex-row justify-start align-items-start ga-1 mt-auto"
-            >
+            <div class="d-flex flex-wrap flex-sm-column flex-row justify-start align-items-start ga-1 mt-auto">
               <v-btn
                 @click="emit('view-page',item.id, index)"
                 :loading="btnViewLoading[index]"
