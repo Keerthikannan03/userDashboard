@@ -1,0 +1,1 @@
+import{n}from"./nodata-CrGk8vIx.js";import{c as t,a,b as s,u as r,r as m,o as c}from"./index-C7buHmQt.js";const i={__name:"homeCom",setup(l){return(p,o)=>{const e=m("v-img");return c(),t("div",null,[o[0]||(o[0]=a("h2",null,"Home Component",-1)),s(e,{src:r(n),width:"80%",class:"m-auto"},null,8,["src"])])}}};export{i as default};

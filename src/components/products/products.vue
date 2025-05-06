@@ -76,10 +76,10 @@ const viewProduct = (uid, index) => {
     });
 };
 
-const handleChange = (e)=>{
+const handleChange = (e) => {
   console.log(e.target.value, "newVal");
   productsList();
-}
+};
 
 watch(search, (newVal) => {
   if (!newVal || (newVal && newVal.length == 0)) {
@@ -115,33 +115,57 @@ onMounted(() => {
       >
     </div>
 
-    <v-divider></v-divider>
-    <v-card class="d-none">
-      <v-tabs v-model="tabwindow" bg-color="primary">
+    <v-divider class="my-2"></v-divider>
+    <v-card>
+      <v-tabs v-model="tabwindow" color="#1976d2">
         <template v-for="item of tablist" :key="item">
           <v-tab :value="item.value">{{ item.text }}</v-tab>
         </template>
       </v-tabs>
 
-      <v-card-text>
+      <v-card-text class="px-1">
         <v-tabs-window v-model="tabwindow">
           <template v-for="item of tablist" :key="item">
+            <v-tabs-window-item :value="item.value" v-if="item.value == 'product'">
+              <template v-if="productsData && productsData.length > 0">
+                <ProductList
+                  :productDatas="productsData"
+                  @view-page="viewProduct"
+                ></ProductList>
+              </template>
+              <template v-else>
+                <div class="row g-3 pb-2 overflow-y-auto" style="height: 80vh">
+                  <div v-for="item in 15" :key="item" class="col-xxl-4 col-xl-6 col-lg-6">
+                    <div hover class="d-flex card-list d-flex flex-wrap">
+                      <div class="col-sm-3 col-12">
+                        <v-skeleton-loader type="image"></v-skeleton-loader>
+                      </div>
+                      <div class="col-sm-9 col-12 pb-2 px-3">
+                        <v-skeleton-loader type="list-item-two-line"></v-skeleton-loader>
+                        <div class="d-flex justify-content-between">
+                          <v-skeleton-loader
+                            type="list-item-three-line"
+                            class="w-50"
+                          ></v-skeleton-loader>
+                          <v-skeleton-loader
+                            type="actions"
+                            class="w-50"
+                          ></v-skeleton-loader>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- <v-img :src="nodataImg" width="80%" class="m-auto" /> -->
+              </template>
+            </v-tabs-window-item>
             <v-tabs-window-item :value="item.value">
-              {{ item.text }}
+              {{ 'No Data' }}
             </v-tabs-window-item>
           </template>
         </v-tabs-window>
       </v-card-text>
     </v-card>
-    <template v-if="productsData.length !== 0">
-      <ProductList
-        :productDatas="productsData"
-        @view-page="viewProduct"
-      ></ProductList>
-    </template>
-    <template v-if="productsData.length === 0">
-      <v-img :src="nodataImg" width="80%" class="m-auto" />
-    </template>
   </div>
 </template>
 
